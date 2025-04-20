@@ -2,17 +2,18 @@ package main.java.com.myproject.model;
 
 import java.util.Date;
 
+
 public class Budget {
     private double amount;
     private Date startDate;
     private Date endDate;
-
+    
     public Budget(double amount, Date startDate, Date endDate) {
         this.amount = amount;
         this.startDate = startDate;
         this.endDate = endDate;
     }
-
+    
     // Getters and Setters
     public double getAmount() {
         return amount;

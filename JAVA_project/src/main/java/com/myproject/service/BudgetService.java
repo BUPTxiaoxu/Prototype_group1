@@ -1,11 +1,11 @@
 package main.java.com.myproject.service;
 
 import main.java.com.myproject.model.Budget;
-
 import java.util.Calendar;
 import java.util.Date;
 
 public class BudgetService {
+    
     private Budget currentBudget;
 
     public BudgetService() {
