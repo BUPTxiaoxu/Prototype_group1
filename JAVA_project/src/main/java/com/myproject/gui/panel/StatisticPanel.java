@@ -1,4 +1,4 @@
-}package main.java.com.myproject.gui.panel;
+package main.java.com.myproject.gui.panel;
 
 import main.java.com.myproject.service.BudgetService;
 import main.java.com.myproject.service.StatisticService;
@@ -282,3 +282,4 @@ public class StatisticPanel extends JPanel {
     public void updatePanel() {
         updateCharts();
     }
+}
