@@ -25,7 +25,7 @@ public class StatisticService {
         this.budgetService = budgetService;
     }
 
-    public main.java.com.myproject.service.StatisticService.CategoryStatistics getCurrentMonthStatistics() {
+    public CategoryStatistics getCurrentMonthStatistics() {
         // Get current month
         Calendar cal = Calendar.getInstance();
         int year = cal.get(Calendar.YEAR);
@@ -34,7 +34,7 @@ public class StatisticService {
         return getMonthStatistics(year, month);
     }
 
-    public main.java.com.myproject.service.StatisticService.CategoryStatistics getMonthStatistics(int year, int month) {
+    public CategoryStatistics getMonthStatistics(int year, int month) {
         List<Transaction> transactions = transactionService.getAllTransactions();
 
         // Initialize category maps with default categories
@@ -75,27 +75,10 @@ public class StatisticService {
             }
         }
 
-        // 这里是如果没设置输出输入默认值，我先给注销了
-//        if (totalExpenses == 0) {
-//            expenseByCategory.put("Rent", 2000.0);
-//            expenseByCategory.put("Shopping", 1500.0);
-//            expenseByCategory.put("Food", 1000.0);
-//            expenseByCategory.put("Transportation", 500.0);
-//            totalExpenses = 5000.0;
-//        }
-//
-//        if (totalIncome == 0) {
-//            incomeByCategory.put("Salary", 5000.0);
-//            incomeByCategory.put("Investment", 1000.0);
-//            totalIncome = 6000.0;
-//        }
-
         double budget = budgetService.getBudgetAmount();
-        //if (budget == 0) budget = 6000.0; // 可以自己设置一个
-
         double remaining = budget - totalExpenses;
 
-        return new main.java.com.myproject.service.StatisticService.CategoryStatistics(
+        return new CategoryStatistics(
                 expenseByCategory,
                 incomeByCategory,
                 totalExpenses,
