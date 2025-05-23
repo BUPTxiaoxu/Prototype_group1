@@ -25,10 +25,20 @@ public class DailyRecordsPanel extends JPanel {
     private JLabel budgetValueLabel;
     private SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
 
+    // 修改构造函数
     public DailyRecordsPanel(TransactionService transactionService, MainFrame mainFrame) {
         this.transactionService = transactionService;
         this.mainFrame = mainFrame;
-        this.budgetService = new BudgetService();
+
+        // 从 MainFrame 获取同一个 BudgetService 实例
+        if (mainFrame != null) {
+            this.budgetService = mainFrame.getBudgetService();
+            System.out.println("DailyRecordsPanel: Using budgetService from MainFrame: " + budgetService.hashCode());
+        } else {
+            // 如果没有 mainFrame，创建新实例（向后兼容）
+            this.budgetService = new BudgetService();
+            System.out.println("DailyRecordsPanel: Created new BudgetService: " + budgetService.hashCode());
+        }
 
         setLayout(new BorderLayout());
         setBorder(BorderFactory.createEmptyBorder(20, 20, 20, 20));
@@ -38,13 +48,13 @@ public class DailyRecordsPanel extends JPanel {
 
         JPanel monthlyExpensePanel = createMonthlyExpenseModule();
         JPanel recentTransactionsPanel = createRecentTransactionsModule();
-        JPanel budgetAllocationPanel = createBudgetAllocationModule();
+        JPanel budgetInfoPanel = createBudgetInfoModule(); // 修改为仅显示预算信息的面板
 
         mainContainer.add(monthlyExpensePanel);
         mainContainer.add(Box.createRigidArea(new Dimension(0, 15)));
         mainContainer.add(recentTransactionsPanel);
         mainContainer.add(Box.createRigidArea(new Dimension(0, 15)));
-        mainContainer.add(budgetAllocationPanel);
+        mainContainer.add(budgetInfoPanel);
 
         add(new JScrollPane(mainContainer), BorderLayout.CENTER);
     }
@@ -104,9 +114,10 @@ public class DailyRecordsPanel extends JPanel {
         return panel;
     }
 
-    private JPanel createBudgetAllocationModule() {
+    // 修改为仅显示预算信息的面板，移除设置预算功能
+    private JPanel createBudgetInfoModule() {
         JPanel panel = new JPanel(new BorderLayout());
-        panel.setBorder(BorderFactory.createTitledBorder("Budget Allocation"));
+        panel.setBorder(BorderFactory.createTitledBorder("Budget Information"));
         panel.setMaximumSize(new Dimension(Integer.MAX_VALUE, 150));
         panel.setPreferredSize(new Dimension(750, 150));
 
@@ -126,22 +137,13 @@ public class DailyRecordsPanel extends JPanel {
         budgetInfoPanel.add(budgetLabel);
         budgetInfoPanel.add(budgetValueLabel);
 
+        // 添加提示性标签，引导用户到预算管理面板
+        JLabel noteLabel = new JLabel("Note: To set or modify budgets, please go to the Budget panel.", JLabel.CENTER);
+        noteLabel.setFont(new Font("Arial", Font.ITALIC, 12));
+        noteLabel.setForeground(new Color(127, 140, 141));
+
         panel.add(budgetInfoPanel, BorderLayout.CENTER);
-
-        JButton setBudgetButton = new JButton("Set Budget");
-        setBudgetButton.addActionListener(e -> {
-            String input = JOptionPane.showInputDialog(this, "Enter your monthly budget:");
-            if (input != null && !input.trim().isEmpty()) {
-                try {
-                    budgetService.setMonthlyBudget(Double.parseDouble(input));
-                    updateBudgetDisplay();
-                } catch (NumberFormatException ex) { }
-            }
-        });
-
-        JPanel buttonPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT));
-        buttonPanel.add(setBudgetButton);
-        panel.add(buttonPanel, BorderLayout.SOUTH);
+        panel.add(noteLabel, BorderLayout.SOUTH);
 
         return panel;
     }
@@ -370,8 +372,11 @@ public class DailyRecordsPanel extends JPanel {
         updateTransactionsTable();
         updateBudgetDisplay();
         updateChart();
-        //mainFrame.updateAssetsPanel();
 
+        // 通知主窗口更新其他面板
+        if (mainFrame != null) {
+            mainFrame.updateDependentPanels();
+        }
     }
 
     private void updateTransactionsTable() {
