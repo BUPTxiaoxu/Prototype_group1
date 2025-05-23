@@ -481,5 +481,5 @@ public class ProfilePanel extends JPanel {
                     "Error",
                     JOptionPane.ERROR_MESSAGE);
         }
-    }
-}
+    }//
+}///
