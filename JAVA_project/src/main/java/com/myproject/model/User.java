@@ -13,7 +13,7 @@ public class User {
     private String avatarPath;
 
     /**
-     * 默认的构造函数
+     * 默认构造函数
      */
     public User() {
         this.username = "";
@@ -45,7 +45,7 @@ public class User {
         this.avatarPath = avatarPath;
     }
 
-    // 获取用户名
+    // 获取用户名以更新存储
     public String getUsername() {
         return username;
     }
@@ -95,25 +95,21 @@ public class User {
         this.address = address;
     }
 
-    
     // 获取个人简介
     public String getBio() {
         return bio;
     }
 
-    
     // 设置个人简介
     public void setBio(String bio) {
         this.bio = bio;
     }
 
-    
     // 获取头像路径
     public String getAvatarPath() {
         return avatarPath;
     }
 
-    
     // 设置头像路径
     public void setAvatarPath(String avatarPath) {
         this.avatarPath = avatarPath;
