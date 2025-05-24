@@ -495,4 +495,5 @@ public class DailyRecordsPanel extends JPanel {
         chartPanel.revalidate();
         chartPanel.repaint();
     }
+
 }
