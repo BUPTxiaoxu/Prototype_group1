@@ -1,7 +1,7 @@
 package main.java.com.myproject.model;
 
 /**
- * 用户模型类 - 存储用户个人信息
+ * 用户模型类 - 存储用户的个人信息
  */
 public class User {
     private String username;
@@ -13,7 +13,7 @@ public class User {
     private String avatarPath;
 
     /**
-     * 默认构造函数
+     * 默认的构造函数
      */
     public User() {
         this.username = "";
@@ -95,21 +95,25 @@ public class User {
         this.address = address;
     }
 
+    
     // 获取个人简介
     public String getBio() {
         return bio;
     }
 
+    
     // 设置个人简介
     public void setBio(String bio) {
         this.bio = bio;
     }
 
+    
     // 获取头像路径
     public String getAvatarPath() {
         return avatarPath;
     }
 
+    
     // 设置头像路径
     public void setAvatarPath(String avatarPath) {
         this.avatarPath = avatarPath;

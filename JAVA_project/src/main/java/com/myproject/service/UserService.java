@@ -6,7 +6,7 @@ import java.io.*;
 import java.util.Properties;
 
 /**
- * 用户服务类 - 处理用户数据的存储和检索
+ * 用户服务类 - 处理用户数据存储和检索
  */
 public class UserService {
 
@@ -38,7 +38,7 @@ public class UserService {
     /**
      * 保存用户数据
      * @param user 要保存的用户对象
-     * @return 是否保存成功
+     * @return 判断是否保存成功
      */
     public boolean saveUser(User user) {
         if (user == null) {
@@ -80,7 +80,7 @@ public class UserService {
                 // 检查头像文件是否存在
                 if (currentUser.getAvatarPath() == null || currentUser.getAvatarPath().isEmpty()
                         || !new File(currentUser.getAvatarPath()).exists()) {
-                    // 如果头像不存在，使用默认头像
+                    // 若头像不存在，则使用默认头像
                     currentUser.setAvatarPath(DEFAULT_AVATAR_PATH);
                 }
 
@@ -90,7 +90,7 @@ public class UserService {
                 createDefaultUser();
             }
         } else {
-            // 如果配置文件不存在，创建默认用户
+            // 若配置文件不存在，则创建默认用户
             createDefaultUser();
         }
     }
