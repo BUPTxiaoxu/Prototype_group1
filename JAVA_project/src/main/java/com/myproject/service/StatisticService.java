@@ -52,7 +52,7 @@ public class StatisticService {
         double totalExpenses = 0;
         double totalIncome = 0;
 
-        // Calculate totals by category
+        // Calculate total by category
         for (Transaction transaction : transactions) {
             Calendar transCal = Calendar.getInstance();
             transCal.setTime(transaction.getDate());
