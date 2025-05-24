@@ -29,7 +29,7 @@ public class StatisticService {
         // Get current month
         Calendar cal = Calendar.getInstance();
         int year = cal.get(Calendar.YEAR);
-        int mon = cal.get(Calendar.MONTH);
+        int month = cal.get(Calendar.MONTH);
 
         return getMonthStatistics(year, month);
     }
