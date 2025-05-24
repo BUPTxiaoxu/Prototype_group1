@@ -17,7 +17,7 @@ public class StatisticService {
     };
 
     private static final String[] DEFAULT_INCOME_CATEGORIES = {
-            "Salary", "Investment", "Gift", "Other"
+            "Sary", "Investment", "Gift", "Other"
     };
 
     public StatisticService(TransactionService transactionService, BudgetService budgetService) {
