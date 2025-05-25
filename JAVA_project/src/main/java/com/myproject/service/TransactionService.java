@@ -58,6 +58,22 @@ public class TransactionService {
         }
     }
 
+    public int getCurrentMonthTransactionCount() {
+        Calendar cal = Calendar.getInstance();
+        int currentYear = cal.get(Calendar.YEAR);
+        int currentMonth = cal.get(Calendar.MONTH);
+
+        int count = 0;
+        for (Transaction transaction : transactions) {
+            cal.setTime(transaction.getDate());
+            if (cal.get(Calendar.YEAR) == currentYear &&
+                    cal.get(Calendar.MONTH) == currentMonth) {
+                count++;
+            }
+        }
+        return count;
+    }
+
     public List<Transaction> getAllTransactions() {
         return new ArrayList<>(transactions);
     }
