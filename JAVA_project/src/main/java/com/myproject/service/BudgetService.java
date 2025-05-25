@@ -44,10 +44,11 @@ public class BudgetService {
         categoryBudgets = new HashMap<>();
     }
 
-    /**
-     * 设置月度预算
-     * @param amount 预算金额
-     */
+    public boolean hasBudget() {
+        return getBudgetAmount() > 0;
+    }
+
+
     public void setMonthlyBudget(double amount) {
         Calendar cal = Calendar.getInstance();
         // Set to first day of current month
