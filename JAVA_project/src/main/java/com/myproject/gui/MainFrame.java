@@ -1,133 +1,178 @@
-//
-// Source code recreated from a .class file by IntelliJ IDEA
-// (powered by FernFlower decompiler)
-//
-
 package main.java.com.myproject.gui;
 
-import java.awt.BorderLayout;
-import java.awt.CardLayout;
-import java.awt.Color;
-import java.awt.Component;
-import java.awt.Dimension;
-import java.awt.Font;
-import javax.swing.Box;
-import javax.swing.BoxLayout;
-import javax.swing.JButton;
-import javax.swing.JFrame;
-import javax.swing.JPanel;
-import javax.swing.SwingUtilities;
-import javax.swing.UIManager;
-import main.java.com.myproject.gui.panel.AIPanel;
-import main.java.com.myproject.gui.panel.AssetsPanel;
-import main.java.com.myproject.gui.panel.DailyRecordsPanel;
-import main.java.com.myproject.gui.panel.ProfilePanel;
-import main.java.com.myproject.gui.panel.StatisticPanel;
+import main.java.com.myproject.gui.panel.*;
 import main.java.com.myproject.service.BudgetService;
 import main.java.com.myproject.service.TransactionService;
+
+import javax.swing.*;
+import java.awt.*;
 
 public class MainFrame extends JFrame {
     private JPanel contentPanel;
     private JPanel mainPanel;
-
     private CardLayout cardLayout;
+
+    // Panel constants
     private static final String DAILY_RECORDS_PANEL = "DailyRecordsPanel";
     private static final String ASSETS_PANEL = "AssetsPanel";
     private static final String STATISTIC_PANEL = "StatisticPanel";
     private static final String AI_PANEL = "AIPanel";
     private static final String PROFILE_PANEL = "ProfilePanel";
+    private static final String BUDGET_PANEL = "BudgetPanel"; // 新增预算面板常量
+
+    // Panel references
     private DailyRecordsPanel dailyRecordsPanel;
     private AssetsPanel assetsPanel;
     private StatisticPanel statisticPanel;
+    private AIPanel aiPanel;
+    private BudgetPanel budgetPanel; // 新增预算面板引用
+
+    // Shared services - 确保这些是共享实例
     private TransactionService transactionService;
     private BudgetService budgetService;
 
     public MainFrame() {
-        this.setTitle("My Application");
-        this.setSize(1000, 600);
-        this.setDefaultCloseOperation(3);
-        this.setLocationRelativeTo((Component)null);
-        this.transactionService = new TransactionService();
-        this.budgetService = new BudgetService();
-        this.initializeUI();
+        setTitle("Finance Manager");
+        setSize(1000, 600);
+        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        setLocationRelativeTo(null);
+
+        // Create shared services - 注意：这些是单例实例
+        transactionService = new TransactionService();
+        budgetService = new BudgetService();
+
+        // 调试输出
+        System.out.println("MainFrame: Created BudgetService instance: " + budgetService.hashCode());
+
+        initializeUI();
     }
 
     private void initializeUI() {
-        this.contentPanel = new JPanel(new BorderLayout());
-        JPanel navigationPanel = this.createNavigationPanel();
-        this.contentPanel.add(navigationPanel, "West");
-        this.mainPanel = new JPanel();
-        this.cardLayout = new CardLayout();
-        this.mainPanel.setLayout(this.cardLayout);
-        this.dailyRecordsPanel = new DailyRecordsPanel(this.transactionService, this);
-        this.assetsPanel = new AssetsPanel(this.transactionService);
-        this.statisticPanel = new StatisticPanel(this.transactionService, this.budgetService);
-        this.mainPanel.add(this.dailyRecordsPanel, "DailyRecordsPanel");
-        this.mainPanel.add(this.assetsPanel, "AssetsPanel");
-        this.mainPanel.add(this.statisticPanel, "StatisticPanel");
-        this.mainPanel.add(new AIPanel(), "AIPanel");
-        this.mainPanel.add(new ProfilePanel(), "ProfilePanel");
-        this.contentPanel.add(this.mainPanel, "Center");
-        this.cardLayout.show(this.mainPanel, "DailyRecordsPanel");
-        this.setContentPane(this.contentPanel);
+        contentPanel = new JPanel(new BorderLayout());
+
+        // Create the navigation panel (left side)
+        JPanel navigationPanel = createNavigationPanel();
+        contentPanel.add(navigationPanel, BorderLayout.WEST);
+
+        // Create the main content panel (right side)
+        mainPanel = new JPanel();
+        cardLayout = new CardLayout();
+        mainPanel.setLayout(cardLayout);
+
+        // Create panels with shared services - 传递相同的实例
+        dailyRecordsPanel = new DailyRecordsPanel(transactionService, this);
+        assetsPanel = new AssetsPanel(transactionService);
+        statisticPanel = new StatisticPanel(transactionService, budgetService);
+        aiPanel = new AIPanel(transactionService, budgetService);
+        budgetPanel = new BudgetPanel(transactionService, budgetService, this); // 创建预算面板
+
+        // 调试输出
+        System.out.println("AIPanel budgetService hash: " + budgetService.hashCode());
+
+        // Add the various panels
+        mainPanel.add(dailyRecordsPanel, DAILY_RECORDS_PANEL);
+        mainPanel.add(assetsPanel, ASSETS_PANEL);
+        mainPanel.add(statisticPanel, STATISTIC_PANEL);
+        mainPanel.add(aiPanel, AI_PANEL);
+        mainPanel.add(budgetPanel, BUDGET_PANEL); // 添加预算面板
+        mainPanel.add(new ProfilePanel(), PROFILE_PANEL);
+
+        contentPanel.add(mainPanel, BorderLayout.CENTER);
+
+        // Show the first panel by default
+        cardLayout.show(mainPanel, DAILY_RECORDS_PANEL);
+
+        setContentPane(contentPanel);
     }
 
     public void switchPanel(String panelName) {
-        this.cardLayout.show(this.mainPanel, panelName);
-        if ("AssetsPanel".equals(panelName)) {
-            this.assetsPanel.updatePanel();
-        } else if ("StatisticPanel".equals(panelName)) {
-            this.statisticPanel.updatePanel();
-        }
+        cardLayout.show(mainPanel, panelName);
 
+        // Update panels if needed
+        if (ASSETS_PANEL.equals(panelName)) {
+            assetsPanel.updatePanel();
+        } else if (STATISTIC_PANEL.equals(panelName)) {
+            statisticPanel.updatePanel();
+        } else if (AI_PANEL.equals(panelName)) {
+            aiPanel.updatePanel();  // Update AI panel when switching to it
+        } else if (BUDGET_PANEL.equals(panelName)) {
+            budgetPanel.updatePanel(); // 更新预算面板
+        }
     }
 
     public void updateDependentPanels() {
-        if (this.assetsPanel != null) {
-            this.assetsPanel.updatePanel();
-        }
+        // 调试输出
+        System.out.println("MainFrame.updateDependentPanels() called");
+        System.out.println("Current budget in MainFrame: ¥" + budgetService.getBudgetAmount());
 
-        if (this.statisticPanel != null) {
-            this.statisticPanel.updatePanel();
+        // Update all panels that depend on transaction or budget data
+        if (assetsPanel != null) {
+            assetsPanel.updatePanel();
         }
+        if (statisticPanel != null) {
+            statisticPanel.updatePanel();
+        }
+        if (aiPanel != null) {
+            // 强制刷新 AI 面板
+            System.out.println("Updating AI panel...");
+            aiPanel.updatePanel();
 
+            // 额外的刷新以确保显示正确
+            SwingUtilities.invokeLater(() -> {
+                aiPanel.revalidate();
+                aiPanel.repaint();
+            });
+        }
+    }
+
+    // 添加一个方法来获取 budgetService（供 DailyRecordsPanel 使用）
+    public BudgetService getBudgetService() {
+        return budgetService;
     }
 
     private JPanel createNavigationPanel() {
         JPanel navPanel = new JPanel();
-        navPanel.setLayout(new BoxLayout(navPanel, 1));
+        navPanel.setLayout(new BoxLayout(navPanel, BoxLayout.Y_AXIS));
         navPanel.setBackground(new Color(50, 50, 50));
-        navPanel.setPreferredSize(new Dimension(200, this.getHeight()));
-        this.addNavButton(navPanel, "Daily Records", "DailyRecordsPanel");
-        this.addNavButton(navPanel, "Assets", "AssetsPanel");
-        this.addNavButton(navPanel, "Statistics", "StatisticPanel");
-        this.addNavButton(navPanel, "AI", "AIPanel");
-        this.addNavButton(navPanel, "Profile", "ProfilePanel");
+        navPanel.setPreferredSize(new Dimension(200, getHeight()));
+
+        // Add navigation buttons - all in English now
+        addNavButton(navPanel, "Daily Records", DAILY_RECORDS_PANEL);
+        addNavButton(navPanel, "Budget", BUDGET_PANEL); // 添加预算按钮
+        addNavButton(navPanel, "Assets", ASSETS_PANEL);
+        addNavButton(navPanel, "Statistics", STATISTIC_PANEL);
+        addNavButton(navPanel, "AI Assistant", AI_PANEL);
+        addNavButton(navPanel, "Profile", PROFILE_PANEL);
+
+        // Add some padding at the bottom
         navPanel.add(Box.createVerticalGlue());
+
         return navPanel;
     }
 
     private void addNavButton(JPanel panel, String text, String panelName) {
         JButton button = new JButton(text);
-        button.setAlignmentX(0.5F);
+        button.setAlignmentX(Component.CENTER_ALIGNMENT);
         button.setMaximumSize(new Dimension(180, 40));
         button.setFocusPainted(false);
+
+        // Style the button
         button.setBackground(new Color(70, 70, 70));
         button.setForeground(Color.WHITE);
         button.setBorderPainted(false);
-        button.setFont(new Font("Arial", 0, 14));
-        button.addActionListener((e) -> {
-            this.switchPanel(panelName);
-        });
+        button.setFont(new Font("Arial", Font.PLAIN, 14));
+
+        button.addActionListener(e -> switchPanel(panelName));
+
         panel.add(Box.createRigidArea(new Dimension(0, 10)));
         panel.add(button);
     }
 
     public static void main(String[] args) {
+        // Set look and feel to system default
         try {
             UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
-        } catch (Exception var2) {
-            Exception e = var2;
+        } catch (Exception e) {
             e.printStackTrace();
         }
 
